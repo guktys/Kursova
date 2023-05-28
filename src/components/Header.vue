@@ -1,24 +1,31 @@
 <template>
   <header class="mb-auto">
-    <link href="https://getbootstrap.com/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="apple-touch-icon" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-    <link rel="manifest" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/manifest.json">
-    <link rel="mask-icon" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/safari-pinned-tab.svg" color="#712cf9">
 
     <div>
       <h3 class="float-md-start mb-0">Guktys</h3>
       <nav class="nav nav-masthead justify-content-center float-md-end">
         <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="/">Головна</a>
         <a class="nav-link fw-bold py-1 px-0" href="/contact">Контакти</a>
-        <b-dropdown id="dropdown-1" text="Послуги" class="m-md-2">
 
-            <b-dropdown-item >Про нас</b-dropdown-item>
-            <b-dropdown-item >Хірургія</b-dropdown-item>
-            <b-dropdown-item >Вакцинація</b-dropdown-item>
-            <b-dropdown-item >Тепрапія</b-dropdown-item>
-            <b-dropdown-item >Кардіологія</b-dropdown-item>
 
-        </b-dropdown>
+
+
+        <el-dropdown>
+          <el-button  type="primary">
+           <p class="headerDropdown">Послуги</p>
+            <el-icon class="el-icon--right"><arrow-down></arrow-down></el-icon>
+          </el-button>
+          <template #dropdown>
+          <el-dropdown-menu >
+            <el-dropdown-item>Про нас</el-dropdown-item>
+            <el-dropdown-item>Хірургія</el-dropdown-item>
+            <el-dropdown-item>Вакцинація</el-dropdown-item>
+            <el-dropdown-item>Тепрапія</el-dropdown-item>
+            <el-dropdown-item>Кардіологія</el-dropdown-item>
+          </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+
       </nav>
     </div>
   </header>
@@ -26,14 +33,21 @@
 
 
 
-<script>
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/js/bootstrap.js'
+<script >
 
+  import { ArrowDown } from '@element-plus/icons-vue'
+  import { ElDropdown, ElDropdownMenu, ElDropdownItem, ElButton } from 'element-plus'
 
-export default {
-  name: 'Header'
+  export default {
+  name: 'Header',
+  components: { ArrowDown, ElDropdown, ElDropdownMenu, ElDropdownItem, ElButton },
+  methods: {
+  handleClick() {
+  alert('button click')
 }
+}
+}
+
 </script>
 <style>
 
@@ -147,5 +161,24 @@ td{
 @media (min-width: 768px){.float-md-end {
   float: right !important;
 }}
+.example-showcase .el-dropdown + .el-dropdown {
+  margin-left: 15px;
+}
+.example-showcase .el-dropdown-link {
+  cursor: pointer;
+  color:white;
+  display: flex;
+  align-items: center;
 
+}
+button.el-button {
+  background-color: #409eff00!important;
+  border-color: #409eff00!important;
+
+  font-size: 16px;
+}
+.headerDropdown{
+  font-weight: 700!important;
+  margin-bottom: 0px;
+}
 </style>
