@@ -6,25 +6,27 @@
       <nav class="nav nav-masthead justify-content-center float-md-end">
         <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="/">Головна</a>
         <a class="nav-link fw-bold py-1 px-0" href="/contact">Контакти</a>
-
-
-
-
         <el-dropdown>
-          <el-button  type="primary">
-           <p class="headerDropdown">Послуги</p>
-            <el-icon class="el-icon--right"><arrow-down></arrow-down></el-icon>
+          <el-button type="primary">
+            <p class="headerDropdown">Послуги</p>
+            <el-icon class="el-icon--right">
+              <arrow-down></arrow-down>
+            </el-icon>
           </el-button>
           <template #dropdown>
-          <el-dropdown-menu >
-            <el-dropdown-item>Про нас</el-dropdown-item>
-            <el-dropdown-item>Хірургія</el-dropdown-item>
-            <el-dropdown-item>Вакцинація</el-dropdown-item>
-            <el-dropdown-item>Тепрапія</el-dropdown-item>
-            <el-dropdown-item>Кардіологія</el-dropdown-item>
-          </el-dropdown-menu>
+            <el-dropdown-menu>
+              <el-dropdown-item>Про нас</el-dropdown-item>
+              <el-dropdown-item>Хірургія</el-dropdown-item>
+              <el-dropdown-item>Вакцинація</el-dropdown-item>
+              <el-dropdown-item>Тепрапія</el-dropdown-item>
+              <el-dropdown-item>Кардіологія</el-dropdown-item>
+            </el-dropdown-menu>
           </template>
         </el-dropdown>
+
+        <a href="/login">
+          <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+        </a>
 
       </nav>
     </div>
@@ -32,20 +34,19 @@
 </template>
 
 
+<script>
 
-<script >
+import {ArrowDown} from '@element-plus/icons-vue'
+import {ElDropdown, ElDropdownMenu, ElDropdownItem, ElButton} from 'element-plus'
 
-  import { ArrowDown } from '@element-plus/icons-vue'
-  import { ElDropdown, ElDropdownMenu, ElDropdownItem, ElButton } from 'element-plus'
-
-  export default {
+export default {
   name: 'Header',
-  components: { ArrowDown, ElDropdown, ElDropdownMenu, ElDropdownItem, ElButton },
+  components: {ArrowDown, ElDropdown, ElDropdownMenu, ElDropdownItem, ElButton},
   methods: {
-  handleClick() {
-  alert('button click')
-}
-}
+    handleClick() {
+      alert('button click')
+    }
+  }
 }
 
 </script>
@@ -101,35 +102,44 @@
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
 }
+
 .btn.btn-lg.btn-secondary.fw-bold.border-white.bg-white {
   color: black;
 }
+
 .nav-link.fw-bold.py-1.px-0 {
   color: white;
 }
+
 .nav-link.fw-bold.py-1.px-0 {
   color: white;
   margin-right: 31px;
 }
+
 .row.p-4.pb-0.pe-lg-0.pt-lg-5.align-items-center.rounded-3.border.shadow-lg {
   margin-top: 50px;
 }
+
 img.rounded-lg-3 {
   height: 10%;
   width: 70%;
   border-radius: 8px;
 }
+
 .carousel-caption {
   text-shadow: 2px 2px 4px #000;
 }
+
 #myCarousel {
   height: 90%;
   margin-top: -49px;
 }
+
 .pb-2.border-bottom {
   margin-top: 55px;
 }
-.flexible-table{
+
+.flexible-table {
   width: 100%;
   margin: 0 0 20px;
   border-collapse: collapse;
@@ -138,18 +148,23 @@ img.rounded-lg-3 {
   justify-content: center;
   align-items: center;
 }
-table{
+
+table {
   border: solid;
 }
-tr{
+
+tr {
   border: solid;
 }
-th{
+
+th {
   border: solid;
 }
-td{
+
+td {
   border: solid;
 }
+
 #dropdown04 {
   color: white;
   margin-top: -4px;
@@ -158,27 +173,34 @@ td{
   margin-right: 8px;
   margin-left: -8px;
 }
-@media (min-width: 768px){.float-md-end {
-  float: right !important;
-}}
+
+@media (min-width: 768px) {
+  .float-md-end {
+    float: right !important;
+  }
+}
+
 .example-showcase .el-dropdown + .el-dropdown {
   margin-left: 15px;
 }
+
 .example-showcase .el-dropdown-link {
   cursor: pointer;
-  color:white;
+  color: white;
   display: flex;
   align-items: center;
 
 }
+
 button.el-button {
-  background-color: #409eff00!important;
-  border-color: #409eff00!important;
+  background-color: #409eff00 !important;
+  border-color: #409eff00 !important;
 
   font-size: 16px;
 }
-.headerDropdown{
-  font-weight: 700!important;
+
+.headerDropdown {
+  font-weight: 700 !important;
   margin-bottom: 0px;
 }
 </style>
