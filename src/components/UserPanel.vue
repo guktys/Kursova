@@ -64,10 +64,10 @@
         <h1>{{ petData[0].name }}</h1>
         <p>Порода: {{ petData[0].type }}</p>
         <p>Інфо: {{ petData[0].card }}</p>
-        <!--   <el-image style="width: 100px; height: 100px" :src="itemImage" :fit="contain" />-->
+        <img :src="getImageUrl(petData[0].img)" />
 
 
-       <!-- Другие поля данных о питомце -->
+        <!-- Другие поля данных о питомце -->
       </div>
 
 
@@ -121,7 +121,14 @@ export default {
 
 
 
-  },
+  },computed: {
+    getImageUrl (name) {
+      return (name) => {
+        const img = '' + name;
+        return new URL(`../assets/pet/${img}`, import.meta.url).href;
+      };
+    }
+  }
 
 };
 </script>
