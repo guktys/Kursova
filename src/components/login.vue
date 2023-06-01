@@ -36,7 +36,7 @@
   import { ElForm, ElFormItem, ElInput, ElButton } from 'element-plus'
   import axios from 'axios';
   import { createRouter, useRouter } from 'vue-router';
-
+  import store  from '../store.js';
   export default {
   name: 'Login',
   components: {
@@ -90,7 +90,8 @@
                 console.log('Server response:', response.data);
                 // Обработка ответа от сервера
               if(response.data.login===true){
-                router.push({ path: '/user_panel' });
+              //  store.commit('setAuthenticated', true);
+              router.push({ path: '/user_panel',query: { id: response.data.id } });
               }
 
               })

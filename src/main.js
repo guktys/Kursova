@@ -8,7 +8,7 @@ import {ArrowDown} from "@element-plus/icons-vue";
 import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'
 const app = createApp(App);
-
+import store from './store';
 // Регистрация компонентов Element Plus
 app.use(router)
     .component('el-button', ElButton)
@@ -21,5 +21,5 @@ app.use(router)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component);
 }
-
+//pp.use(store);
 app.mount('#app');

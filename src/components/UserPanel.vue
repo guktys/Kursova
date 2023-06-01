@@ -1,12 +1,131 @@
 <template>
+  <meta name="theme-color" content="#712cf9">
+  <!-- Favicons -->
+  <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+  />
+  <br>
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <el-row class="tac">
+      <el-col :span="12">
+        <el-menu
+            default-active="2"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+        >
+          <el-sub-menu index="1">
+            <template #title>
+              <el-icon>
+                <location/>
+              </el-icon>
+              <span>Navigator One</span>
+            </template>
+            <el-menu-item-group title="Group One">
+              <el-menu-item index="1-1">item one</el-menu-item>
+              <el-menu-item index="1-2">item two</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="Group Two">
+              <el-menu-item index="1-3">item three</el-menu-item>
+            </el-menu-item-group>
+            <el-sub-menu index="1-4">
+              <template #title>item four</template>
+              <el-menu-item index="1-4-1">item one</el-menu-item>
+            </el-sub-menu>
+          </el-sub-menu>
+          <el-menu-item index="2">
+            <el-icon>
+              <icon-menu/>
+            </el-icon>
+            <span>Navigator Two</span>
+          </el-menu-item>
+          <el-menu-item index="3" disabled>
+            <el-icon>
+              <document/>
+            </el-icon>
+            <span>Navigator Three</span>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <el-icon>
+              <setting/>
+            </el-icon>
+            <span>Navigator Four</span>
+          </el-menu-item>
+        </el-menu>
+      </el-col>
 
+    </el-row>
+    <div class="info">
+      <div v-if="petData && petData.length > 0">
+        <!-- Рендеринг данных о питомце -->
+        <h1>{{ petData[0].name }}</h1>
+        <p>Порода: {{ petData[0].type }}</p>
+        <p>Інфо: {{ petData[0].card }}</p>
+        <!--   <el-image style="width: 100px; height: 100px" :src="itemImage" :fit="contain" />-->
+
+
+       <!-- Другие поля данных о питомце -->
+      </div>
+
+
+      <div v-else>
+        <!-- Обработка загрузки данных -->
+        <p>Loading pet data...</p>
+      </div>
+
+
+
+    </div>
+
+  </div>
 </template>
 
-<script>
+<script lang="ts">
+import {
+  Document,
+  Menu as IconMenu,
+  Location,
+  Setting,
+} from '@element-plus/icons-vue'
+import { createRouter, createWebHistory, useRoute } from 'vue-router';
+import {ref} from 'vue';
+import axios from "axios";
+
+
 export default {
-  name: "UserPanel"
-}
+  data() {
+    return {
+      petData: null,
+     // Инициализируем свойство для хранения данных о питомцах
+    };
+  },
+  mounted() {
+    const route = useRoute();
+    const id = route.query.id;
+
+    // Выполняем GET-запрос на сервер, передавая идентификатор
+    axios.post('http://localhost:3001/pet', { id: id})
+        .then(response => {
+          // Обработка успешного ответа
+          this.petData = response.data;
+
+          console.log( this.petData);
+        })
+        .catch(error => {
+          // Обработка ошибки
+          console.error(error);
+        });
+
+
+
+  },
+
+};
 </script>
+
 
 <style scoped>
 .bd-placeholder-img {
@@ -145,5 +264,18 @@ a.rowItem p {
 
 .cover-container.d-flex.w-100.h-100.p-3.mx-auto.flex-column {
   margin-top: 90px;
+}
+
+.el-col-12 {
+  max-width: 17%;
+  flex: 0 0 50%;
+}
+.info {
+  text-align: left;
+  margin-left: 284px;
+  margin-top: -233px;
+}
+.info {
+  width: 37%;
 }
 </style>
