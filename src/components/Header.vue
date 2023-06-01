@@ -15,7 +15,7 @@
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>Про нас</el-dropdown-item>
+              <el-dropdown-item ><a  href="/about">Про нас</a></el-dropdown-item>
               <el-dropdown-item>Хірургія</el-dropdown-item>
               <el-dropdown-item>Вакцинація</el-dropdown-item>
               <el-dropdown-item>Тепрапія</el-dropdown-item>
@@ -202,5 +202,9 @@ button.el-button {
 .headerDropdown {
   font-weight: 700 !important;
   margin-bottom: 0px;
+}
+a {
+  color: inherit!important;
+  text-decoration: none!important;
 }
 </style>

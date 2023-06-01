@@ -3,11 +3,13 @@ import Home_page from './components/Home.vue';
 import Contact from "./components/Contact.vue";
 import Login from "./components/login.vue"
 import UserPanel from "@/components/UserPanel.vue";
+import About from "@/components/About.vue";
 const routes = [
     { path: '/', component: Home_page },
     { path: '/contact', component: Contact },
     { path: '/login', component: Login },
     { path: '/user_panel', component:UserPanel },
+    { path: '/about', component:About },
 ];
 
 const router = createRouter({
