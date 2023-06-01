@@ -22,19 +22,12 @@
               <el-icon>
                 <location/>
               </el-icon>
-              <span>Navigator One</span>
+              <span>Записи до лікаря</span>
             </template>
-            <el-menu-item-group title="Group One">
-              <el-menu-item index="1-1">item one</el-menu-item>
-              <el-menu-item index="1-2">item two</el-menu-item>
+            <el-menu-item-group title="">
+              <el-menu-item index="1-1" @click="goToAppointments">Записатися</el-menu-item>
+              <el-menu-item index="1-2">Календар записів</el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="Group Two">
-              <el-menu-item index="1-3">item three</el-menu-item>
-            </el-menu-item-group>
-            <el-sub-menu index="1-4">
-              <template #title>item four</template>
-              <el-menu-item index="1-4-1">item one</el-menu-item>
-            </el-sub-menu>
           </el-sub-menu>
           <el-menu-item index="2">
             <el-icon>
@@ -90,7 +83,7 @@ import {
   Location,
   Setting,
 } from '@element-plus/icons-vue'
-import { createRouter, createWebHistory, useRoute } from 'vue-router';
+import {createRouter, createWebHistory, useRoute, useRouter} from 'vue-router';
 import {ref} from 'vue';
 import axios from "axios";
 
@@ -127,8 +120,15 @@ export default {
         const img = '' + name;
         return new URL(`../assets/pet/${img}`, import.meta.url).href;
       };
-    }
-  }
+    },
+   }, methods: {
+    goToAppointments() {
+      const id = this.$route.query.id;
+      console.log(id);
+      this.$router.push({ path: '/appointments', query: { id: id } });
+
+    },
+  },
 
 };
 </script>
