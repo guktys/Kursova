@@ -9,15 +9,118 @@
   />
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-
+    <el-form
+        :label-position="labelPosition"
+        label-width="100px"
+        :model="formLabelAlign"
+        style="max-width: 460px"
+    >
+      <h1 style="text-align: left">Регестраці запису до лікаря:</h1>
+      <el-form-item label="Оберіть лікаря:">
+        <el-cascader v-model="formLabelAlign.doctor" placeholder="Лікар"
+                     :options="options"
+                     filterable @change="handleChange"/>
+      </el-form-item>
+      <el-form-item label="Причина звернення">
+        <el-input type="textarea" v-model="formLabelAlign.reason"/>
+      </el-form-item>
+      <el-form-item label="Дата запису">
+        <el-date-picker
+            v-model="formLabelAlign.data"
+            type="date"
+            placeholder="Pick a day"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm(formLabelAlign)">Записатися</el-button>
+      </el-form-item>
+    </el-form>
 
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import {ref, onMounted} from 'vue';
+import {ElCascader,  ElButton } from 'element-plus';
+import {useRoute} from 'vue-router';
+import axios from 'axios';
+import {reactive} from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+
+
+
+
+
 export default {
-  name: "Appointments"
-}
+  components: {
+    ElCascader,
+  },
+  setup() {
+    const value = ref([]);
+    const props = {
+      expandTrigger: 'hover',
+    };
+
+    const handleChange = (value: any) => {
+      console.log(value);
+    };
+    const user = ref('');
+    const options = ref([]);
+    interface FormLabelAlign {
+      reason: string;
+      doctor: number;
+      data: string;
+      user:string;
+    }
+    const formLabelAlign = reactive<FormLabelAlign>({
+      reason: '',
+      doctor:0,
+      data:'',
+      user:'',
+    });
+    const labelPosition = ref('top');
+    const route = useRoute();
+    const id = route.query.id;
+    const submitForm = async (formEl: FormInstance | undefined) => {
+      if (!formEl) return;
+      formEl.user = id; // Добавляем айди пользователя
+      const selectedDoctor = formLabelAlign.doctor.length > 0 ? formLabelAlign.doctor[formLabelAlign.doctor.length - 1] : null;
+      formLabelAlign.doctor = selectedDoctor;
+      console.log(formLabelAlign);
+          try {
+            const response = await axios.post('http://localhost:3001/appoint', formLabelAlign);
+            console.log('Form submitted successfully!');
+            console.log('Response:', response.data);
+            window.location.reload();
+          } catch (error) {
+            console.error('Error submitting form:', error);
+          }
+
+    };
+    onMounted(async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/doctors');
+        const doctors = response.data;
+        options.value = doctors.map((doctor) => ({
+          value: doctor.id,
+          label: doctor.name,
+        }));
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    return {
+      value,
+      props,
+      handleChange,
+      options,
+      formLabelAlign,
+      labelPosition,
+      submitForm,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -142,21 +245,39 @@ a.rowItem p {
   padding-top: 2px;
 }
 
-#dropdown04 {
-  color: white;
-  margin-top: -4px;
-  font-size: 16px;
-  font-weight: 700;
-  margin-right: 8px;
-  margin-left: -8px;
-}
-
-.btn-outline-secondary {
-  --bs-btn-hover-bg: #0086fe00;
-}
 
 .cover-container.d-flex.w-100.h-100.p-3.mx-auto.flex-column {
   margin-top: 90px;
 }
+.demo-date-picker {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  flex-wrap: wrap;
+}
 
+.demo-date-picker .block {
+  padding: 30px 0;
+  text-align: center;
+  border-right: solid 1px var(--el-border-color);
+  flex: 1;
+}
+
+.demo-date-picker .block:last-child {
+  border-right: none;
+}
+
+.demo-date-picker .demonstration {
+  display: block;
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+button.el-button.el-button--primary {
+  border: 1px white solid !important;
+}
+button.el-button.el-button--primary:hover {
+  background-color: whitesmoke !important;
+  color: black;
+}
 </style>

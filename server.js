@@ -53,6 +53,44 @@ app.post('/user', async (req, res) => {
         res.status(500).json({ error: 'Failed to login' });
     }
 });
+// Роут для получения данных из базы данных
+app.get('/doctors', async (req, res) => {
+    const query = "SELECT * FROM doctor";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(query);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({error: 'Failed to login'});
+    }
+});
+
+app.post('/appoint', async (req, res) => {
+    const {
+        reason,
+        doctor,
+        data,
+        user,
+    } = req.body;
+
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const query = "INSERT INTO `doctor's_appointments` (`id`, `doctor`, `user`, `reason`, `data`) VALUES (?, ?, ?, ?, ?)";
+        const values = ['', doctor, user, reason, data];
+        const rows = await conn.query(query, values);
+        if (rows.length > 0) {
+            res.json({ message: 'Appointment created successfully' });
+        } else {
+            res.json({ message: 'I`m work vse ok' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to login' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
