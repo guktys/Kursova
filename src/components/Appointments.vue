@@ -9,6 +9,8 @@
   />
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+    <img class="pess" src="../assets/pexels-sam-lion-5732454-removebg-preview.png"/>
     <el-form
         :label-position="labelPosition"
         label-width="100px"
@@ -28,8 +30,21 @@
         <el-date-picker
             v-model="formLabelAlign.data"
             type="date"
-            placeholder="Pick a day"
-        />
+            placeholder="Оберіть день прийому"
+            :picker-options="pickerOptions"
+            format="YYYY/MM/DD"
+            value-format="YYYY-MM-DD"
+        >
+          <template #default="cell">
+            <div class="cell">
+              <span class="text">{{ cell.text }}</span>
+              <span v-if="isHoliday(cell.date)" class="holiday"></span>
+              <span v-if="data.includes(dayjs(cell.date).format('YYYY-MM-DD'))" class="available-dot"></span>
+            </div>
+          </template>
+        </el-date-picker>
+
+
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formLabelAlign)">Записатися</el-button>
@@ -46,7 +61,7 @@ import {useRoute} from 'vue-router';
 import axios from 'axios';
 import {reactive} from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-
+import dayjs from 'dayjs'
 
 
 
@@ -81,6 +96,7 @@ export default {
     const labelPosition = ref('top');
     const route = useRoute();
     const id = route.query.id;
+    const data = ref([]);
     const submitForm = async (formEl: FormInstance | undefined) => {
       if (!formEl) return;
       formEl.user = id; // Добавляем айди пользователя
@@ -97,6 +113,25 @@ export default {
           }
 
     };
+    const holidays = [
+      '2023-05-01',
+      '2023-05-09',
+      '2023-06-12',
+      // Add more holidays as needed
+    ];
+
+    const isHoliday = (date) => {
+      const dateString = dayjs(date).format('YYYY-MM-DD');
+      return holidays.includes(dateString);
+    };
+
+
+    const pickerOptions = {
+      disabledDate: (time) => {
+        const date = dayjs(time);
+        return isHoliday(date);
+      },
+    };
     onMounted(async () => {
       try {
         const response = await axios.get('http://localhost:3001/doctors');
@@ -108,6 +143,21 @@ export default {
       } catch (error) {
         console.error(error);
       }
+      try {
+        const response = await axios.get('http://localhost:3001/data_appoint', {
+          params: {
+            user: id
+          }
+        });
+        console.log(response.data);
+        data.value = response.data.map((item) => item.data.substr(0, 10));
+        console.log(data.value);
+      } catch (error) {
+        console.error(error);
+      }
+
+
+
     });
 
     return {
@@ -118,6 +168,10 @@ export default {
       formLabelAlign,
       labelPosition,
       submitForm,
+      pickerOptions,
+      data,
+      isHoliday,
+      dayjs,
     };
   },
 };
@@ -279,5 +333,43 @@ button.el-button.el-button--primary {
 button.el-button.el-button--primary:hover {
   background-color: whitesmoke !important;
   color: black;
+}
+img.pess {
+  position: absolute;
+  height: 556px;
+  width: 500px;
+  padding: 0px;
+  top: -46px;
+  right: 91px;
+}
+.cell {
+  height: 30px;
+  padding: 3px 0;
+  box-sizing: border-box;
+}
+.cell .text {
+  width: 24px;
+  height: 24px;
+  display: block;
+  margin: 0 auto;
+  line-height: 24px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+}
+.cell.current .text {
+  background: #626aef;
+  color: #fff;
+}
+.cell .holiday {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--el-color-danger);
+  border-radius: 50%;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

@@ -91,6 +91,23 @@ app.post('/appoint', async (req, res) => {
         res.status(500).json({ error: 'Failed to login' });
     }
 });
+app.get('/data_appoint', async (req, res) => {
+    const { user } = req.query;
+    const query = "SELECT * FROM `doctor's_appointments` WHERE `user` = ?";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(query, [user]);
+
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({ error: 'Failed to fetch data' });
+    }
+});
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
