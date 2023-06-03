@@ -31,15 +31,14 @@
             v-model="formLabelAlign.data"
             type="date"
             placeholder="Оберіть день прийому"
-            :picker-options="pickerOptions"
             format="YYYY/MM/DD"
             value-format="YYYY-MM-DD"
+            :disabled-date="disabledDate"
         >
           <template #default="cell">
             <div class="cell">
               <span class="text">{{ cell.text }}</span>
               <span v-if="isHoliday(cell.date)" class="holiday"></span>
-              <span v-if="data.includes(dayjs(cell.date).format('YYYY-MM-DD'))" class="available-dot"></span>
             </div>
           </template>
         </el-date-picker>
@@ -96,7 +95,7 @@ export default {
     const labelPosition = ref('top');
     const route = useRoute();
     const id = route.query.id;
-    const data = ref([]);
+    const dataFromBase = ref([]);
     const submitForm = async (formEl: FormInstance | undefined) => {
       if (!formEl) return;
       formEl.user = id; // Добавляем айди пользователя
@@ -114,24 +113,24 @@ export default {
 
     };
     const holidays = [
-      '2023-05-01',
-      '2023-05-09',
+      '2023-06-01',
+      '2023-06-09',
       '2023-06-12',
       // Add more holidays as needed
     ];
 
     const isHoliday = (date) => {
-      const dateString = dayjs(date).format('YYYY-MM-DD');
-      return holidays.includes(dateString);
-    };
+      const formattedDate = dayjs(date).format('YYYY-MM-DD');
+      return dataFromBase.value.some((item) => item === formattedDate);
+    }
+
+      const disabledDate = (time) => {
+        // Проверяем, есть ли текущая дата в массиве dataFromBase
+        const formattedDate = dayjs(time).format('YYYY-MM-DD');
+        return dataFromBase.value.some((item) => item === formattedDate);
+      };
 
 
-    const pickerOptions = {
-      disabledDate: (time) => {
-        const date = dayjs(time);
-        return isHoliday(date);
-      },
-    };
     onMounted(async () => {
       try {
         const response = await axios.get('http://localhost:3001/doctors');
@@ -150,8 +149,8 @@ export default {
           }
         });
         console.log(response.data);
-        data.value = response.data.map((item) => item.data.substr(0, 10));
-        console.log(data.value);
+        dataFromBase.value = response.data.map((item) => item.data.substr(0, 10));
+        console.log(dataFromBase.value);
       } catch (error) {
         console.error(error);
       }
@@ -168,10 +167,10 @@ export default {
       formLabelAlign,
       labelPosition,
       submitForm,
-      pickerOptions,
-      data,
+      dataFromBase,
       isHoliday,
       dayjs,
+      disabledDate ,
     };
   },
 };
