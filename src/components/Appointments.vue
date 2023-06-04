@@ -7,6 +7,8 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
   />
+
+
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
 
@@ -61,7 +63,9 @@ import axios from 'axios';
 import {reactive} from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import dayjs from 'dayjs'
+import utcPlugin from 'dayjs/plugin/utc';
 
+dayjs.extend(utcPlugin);
 
 
 
@@ -112,21 +116,15 @@ export default {
           }
 
     };
-    const holidays = [
-      '2023-06-01',
-      '2023-06-09',
-      '2023-06-12',
-      // Add more holidays as needed
-    ];
 
     const isHoliday = (date) => {
-      const formattedDate = dayjs(date).format('YYYY-MM-DD');
+      const formattedDate = dayjs(date).utc().format('YYYY-MM-DD');
       return dataFromBase.value.some((item) => item === formattedDate);
     }
 
       const disabledDate = (time) => {
         // Проверяем, есть ли текущая дата в массиве dataFromBase
-        const formattedDate = dayjs(time).format('YYYY-MM-DD');
+        const formattedDate = dayjs(time).utc().format('YYYY-MM-DD');
         return dataFromBase.value.some((item) => item === formattedDate);
       };
 
@@ -371,4 +369,6 @@ img.pess {
   left: 50%;
   transform: translateX(-50%);
 }
+
 </style>
+<style src="../assets/Appointments.css"></style>

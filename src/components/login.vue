@@ -10,24 +10,28 @@
 
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-    <el-form
-        ref="ruleFormRef"
-        :model="ruleForm"
-        :rules="rules"
-        label-width="120px"
-        class="demo-ruleForm"
-    >
-      <el-form-item label="Name" prop="name">
-        <el-input v-model="ruleForm.name" />
-      </el-form-item>
-      <el-form-item label="Password" prop="pass">
-        <el-input v-model="ruleForm.pass" type="password" autocomplete="off" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm">Submit</el-button>
-        <el-button @click="resetForm">Reset</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="login" style="display: flex; flex-direction: column; align-items: center;">
+      <el-form
+          ref="ruleFormRef"
+          :model="ruleForm"
+          :rules="rules"
+          label-width="120px"
+          class="demo-ruleForm"
+      >
+        <el-form-item label="Ім'я" prop="name">
+          <el-input v-model="ruleForm.name" />
+        </el-form-item>
+        <el-form-item label="Пароль" prop="pass">
+          <el-input v-model="ruleForm.pass" type="password" autocomplete="off" />
+        </el-form-item>
+        <el-form-item style="display: flex; justify-content: center;">
+          <el-button type="primary" @click="submitForm">Увійти</el-button>
+          <el-button @click="resetForm">Скинути</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+
   </div>
 </template>
 
@@ -258,10 +262,18 @@ a.rowItem p {
 }
 
 .cover-container.d-flex.w-100.h-100.p-3.mx-auto.flex-column {
-  margin-top: 90px;
+  margin-top: 150px;
 }
-
-input .el-input__inner {
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+input  {
   box-shadow: 0 0 0 2px #0DA8BC00 !important;
 }
+form {
+  width: 36%;
+}
+
 </style>

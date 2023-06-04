@@ -106,7 +106,21 @@ app.get('/data_appoint', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch data' });
     }
 });
+app.get('/getDoctors', async (req, res) => {
+    const { id } = req.query;
+    const query = "SELECT * FROM `doctor` WHERE `id` = ?";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(query, [id]);
 
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({ error: 'Failed to fetch data' });
+    }
+});
 
 
 app.listen(port, () => {

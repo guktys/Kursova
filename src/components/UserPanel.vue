@@ -26,21 +26,9 @@
             </template>
             <el-menu-item-group title="">
               <el-menu-item index="1-1" @click="goToAppointments">Записатися</el-menu-item>
-              <el-menu-item index="1-2">Календар записів</el-menu-item>
+              <el-menu-item index="1-2" @click="goToUserCalendar">Календар записів</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
-          <el-menu-item index="2">
-            <el-icon>
-              <icon-menu/>
-            </el-icon>
-            <span>Navigator Two</span>
-          </el-menu-item>
-          <el-menu-item index="3" disabled>
-            <el-icon>
-              <document/>
-            </el-icon>
-            <span>Navigator Three</span>
-          </el-menu-item>
           <el-menu-item index="4">
             <el-icon>
               <setting/>
@@ -56,7 +44,7 @@
         <!-- Рендеринг данных о питомце -->
         <h1>{{ petData[0].name }}</h1>
         <p>Порода: {{ petData[0].type }}</p>
-        <p>Інфо: {{ petData[0].card }}</p>
+        <p v-html="petData[0].card "></p>
         <img :src="getImageUrl(petData[0].img)" />
 
 
@@ -104,7 +92,8 @@ export default {
         .then(response => {
           // Обработка успешного ответа
           this.petData = response.data;
-
+          let parsedObject=JSON.parse( this.petData[0].card);
+          this.petData[0].card='Вік: '+parsedObject.age+'<br> Справка: '+parsedObject.illness;
           console.log( this.petData);
         })
         .catch(error => {
@@ -126,6 +115,12 @@ export default {
       const id = this.$route.query.id;
       console.log(id);
       this.$router.push({ path: '/appointments', query: { id: id } });
+
+    },
+    goToUserCalendar() {
+      const id = this.$route.query.id;
+      console.log(id);
+      this.$router.push({ path: '/user_calendar', query: { id: id } });
 
     },
   },
