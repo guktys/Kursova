@@ -6,6 +6,8 @@ import UserPanel from "@/components/UserPanel.vue";
 import About from "@/components/About.vue";
 import Appointments from "@/components/Appointments.vue";
 import UserCalendar from "@/components/UserCalendar.vue";
+import Resept from "@/components/Resept.vue";
+import Poslygu from "@/components/Poslygu.vue";
 const routes = [
     { path: '/', component: Home_page },
     { path: '/contact', component: Contact },
@@ -14,6 +16,8 @@ const routes = [
     { path: '/about', component:About },
     { path: '/appointments', component:Appointments },
     { path: '/user_calendar', component:UserCalendar },
+    { path: '/resepts', component:Resept  },
+    { path: '/poslygu', component:Poslygu  },
 ];
 
 const router = createRouter({

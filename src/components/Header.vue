@@ -16,10 +16,7 @@
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item ><a  href="/about">Про нас</a></el-dropdown-item>
-              <el-dropdown-item>Хірургія</el-dropdown-item>
-              <el-dropdown-item>Вакцинація</el-dropdown-item>
-              <el-dropdown-item>Тепрапія</el-dropdown-item>
-              <el-dropdown-item>Кардіологія</el-dropdown-item>
+              <el-dropdown-item><a href="/poslygu">Прайс</a></el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>

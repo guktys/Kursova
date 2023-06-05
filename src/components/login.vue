@@ -269,11 +269,10 @@ a.rowItem p {
   flex-direction: column;
   align-items: center;
 }
-input  {
-  box-shadow: 0 0 0 2px #0DA8BC00 !important;
-}
+
 form {
   width: 36%;
 }
 
 </style>
+<style src="../assets/Appointments.css"></style>

@@ -29,11 +29,11 @@
               <el-menu-item index="1-2" @click="goToUserCalendar">Календар записів</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
-          <el-menu-item index="4">
+          <el-menu-item index="4" @click="goToResept">
             <el-icon>
-              <setting/>
+              <el-icon><document /></el-icon>
             </el-icon>
-            <span>Navigator Four</span>
+            <span>Рецепти та препарати</span>
           </el-menu-item>
         </el-menu>
       </el-col>
@@ -121,6 +121,13 @@ export default {
       const id = this.$route.query.id;
       console.log(id);
       this.$router.push({ path: '/user_calendar', query: { id: id } });
+
+    },
+
+    goToResept(){
+      const id = this.$route.query.id;
+      console.log(id);
+      this.$router.push({ path: '/resepts', query: { id: id } });
 
     },
   },

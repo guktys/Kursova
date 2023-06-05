@@ -11,6 +11,7 @@
 
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
     <el-calendar v-model="selectedDate" :value-format="dateFormat"  @click="handleDateChange">
       <template #date-cell="{ data }">
         <span v-if="isHoliday(data)" class="holiday"></span>
@@ -89,7 +90,8 @@ console.log("handleDateChange");
     const isHoliday = (date) => {
       const formattedDate = dayjs(date.day).utc().format('YYYY-MM-DD');
       return days.value.includes(formattedDate);
-    }
+    };
+
     onMounted(async () => {
 
 

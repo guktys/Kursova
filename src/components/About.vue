@@ -47,13 +47,66 @@
         </div>
       </el-carousel-item>
     </el-carousel>
+    <div class="vet-info">
+      <img class="dogImg" src="../assets/pexels-mikhail-nilov-7469220.jpg" alt="Ветеринарний лікар">
+      <div class="text">
+        <h2>Наші ветеринари</h2>
+        <p>Наші ветеринари володіють високим професіоналізмом та дуже бережно ставляться до кожного пацієнта. Ми прагнемо надати найкращу можливу медичну допомогу вашим улюбленцям та забезпечити їм комфортне та безпечне лікування.</p>
+      </div>
+    </div>
 
 
     <h2 class="pb-2 border-bottom">Прайс стаціонару</h2>
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5"></div>
     <div class="flexible-table">
-      <table class="scrollable" border="0"><thead><tr><th>Услуги</th><th>Пояснение</th><th>Цена, грн</th></tr></thead><tbody><tr class="price__flex-right"><td data-title="Услуги"></td><td data-title="Пояснение">Категория 1 (инъекции, обработки без стоимости препаратов)</td><td data-title="Цена, грн">300</td></tr><tr class="price__flex-right"><td data-title="Услуги"></td><td data-title="Пояснение">Категория 2 (Ж-е в средне тяжелом состоянии,  без стоимости препаратов)</td><td data-title="Цена, грн">1000</td></tr><tr class="price__flex-right"><td data-title="Услуги"></td><td data-title="Пояснение">Категория 3 (Ж-е в тяжелом состоянии, инфузия, инъекции, обработки, оксигенация,  без стоимости препаратов)</td><td data-title="Цена, грн">1500</td></tr><tr class="price__flex-right"><td data-title="Услуги"></td><td data-title="Пояснение">Категория 4 (Ж-е в крайне тяжелом состоянии, реанимация, инфузия, инъекции, обработки, оксигенация, без стоимости препаратов)</td><td data-title="Цена, грн">2000</td></tr><tr class="price__flex-right"><td data-title="Услуги">Коты</td><td data-title="Пояснение">Проживание, уход </td><td data-title="Цена, грн">200</td></tr><tr class="price__flex-right"><td data-title="Услуги">Хорьки, грызуны, птицы</td><td data-title="Пояснение">Проживание, уход </td><td data-title="Цена, грн">100</td></tr><tr class="price__flex-right"><td data-title="Услуги">Собаки</td><td data-title="Пояснение">Проживание, уход, выгул </td><td data-title="Цена, грн">от 300</td></tr></tbody></table>															</div>
+      <table class="scrollable" border="0">
+        <thead>
+        <tr>
+          <th>Послуги</th>
+          <th>Пояснення</th>
+          <th>Ціна, грн</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="price__flex-right">
+          <td data-title="Послуги"></td>
+          <td data-title="Пояснення">Категорія 1 (ін'єкції, обробки без вартості препаратів)</td>
+          <td data-title="Ціна, грн">300</td>
+        </tr>
+        <tr class="price__flex-right">
+          <td data-title="Послуги"></td>
+          <td data-title="Пояснення">Категорія 2 (Ж-е в середньо важкому стані, без вартості препаратів)</td>
+          <td data-title="Ціна, грн">1000</td>
+        </tr>
+        <tr class="price__flex-right">
+          <td data-title="Послуги"></td>
+          <td data-title="Пояснення">Категорія 3 (Ж-е в важкому стані, інфузія, ін'єкції, обробки, оксигенація, без вартості препаратів)</td>
+          <td data-title="Ціна, грн">1500</td>
+        </tr>
+        <tr class="price__flex-right">
+          <td data-title="Послуги"></td>
+          <td data-title="Пояснення">Категорія 4 (Ж-е в надзвичайно важкому стані, реанімація, інфузія, ін'єкції, обробки, оксигенація, без вартості препаратів)</td>
+          <td data-title="Ціна, грн">2000</td>
+        </tr>
+        <tr class="price__flex-right">
+          <td data-title="Послуги">Коти</td>
+          <td data-title="Пояснення">Проживання, догляд</td>
+          <td data-title="Ціна, грн">200</td>
+        </tr>
+        <tr class="price__flex-right">
+          <td data-title="Послуги">Хорьки, гризуни, птахи</td>
+          <td data-title="Пояснення">Проживання, догляд</td>
+          <td data-title="Ціна, грн">100</td>
+        </tr>
+        <tr class="price__flex-right">
+          <td data-title="Послуги">Собаки</td>
+          <td data-title="Пояснення">Проживання, догляд, вигул</td>
+          <td data-title="Ціна, грн">від 300</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -173,4 +226,46 @@ export default {
   position: relative;
   top: 22px;
 }
+.flexible-table {
+  display: flex;
+  justify-content: center;
+}
+
+.scrollable {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr.price__flex-right td:first-child {
+  width: 1px;
+  white-space: nowrap;
+}
+th {
+  color: black;
+}
+img.dogImg {
+ width:700px;
+  justify-content: left;
+  margin-right: 20px;
+}
+.vet-info {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+
 </style>

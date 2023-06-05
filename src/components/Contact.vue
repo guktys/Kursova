@@ -139,4 +139,9 @@ export default {
 .col-lg-6.col-md-8.mx-auto {
   width: 100%;
 }
+
+
+ .btn {
+  margin-right: 10px; /* Отступ между кнопками */
+}
 </style>
