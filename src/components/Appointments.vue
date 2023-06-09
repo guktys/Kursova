@@ -25,9 +25,15 @@
                      :options="options"
                      filterable @change="handleChange"/>
       </el-form-item>
+      <el-form-item label="Оберіть тварину:">
+        <el-cascader v-model="formLabelAlign.pet" placeholder="Тварина"
+                     :options="petData"
+                     filterable @change="handleChange"/>
+      </el-form-item>
       <el-form-item label="Причина звернення">
         <el-input type="textarea" v-model="formLabelAlign.reason"/>
       </el-form-item>
+
       <el-form-item label="Дата запису">
         <el-date-picker
             v-model="formLabelAlign.data"
@@ -57,16 +63,15 @@
 
 <script lang="ts">
 import {ref, onMounted} from 'vue';
-import {ElCascader,  ElButton } from 'element-plus';
+import {ElCascader, ElButton} from 'element-plus';
 import {useRoute} from 'vue-router';
 import axios from 'axios';
 import {reactive} from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type {FormInstance, FormRules} from 'element-plus'
 import dayjs from 'dayjs'
 import utcPlugin from 'dayjs/plugin/utc';
 
 dayjs.extend(utcPlugin);
-
 
 
 export default {
@@ -74,6 +79,7 @@ export default {
     ElCascader,
   },
   setup() {
+    const petData = ref([]);
     const value = ref([]);
     const props = {
       expandTrigger: 'hover',
@@ -84,36 +90,41 @@ export default {
     };
     const user = ref('');
     const options = ref([]);
+
     interface FormLabelAlign {
       reason: string;
       doctor: number;
       data: string;
-      user:string;
+      user: string;
+      pet:number
     }
+
     const formLabelAlign = reactive<FormLabelAlign>({
       reason: '',
-      doctor:0,
-      data:'',
-      user:'',
+      doctor: 0,
+      data: '',
+      user: '',
+      pet:0,
     });
     const labelPosition = ref('top');
     const route = useRoute();
     const id = route.query.id;
     const dataFromBase = ref([]);
+
     const submitForm = async (formEl: FormInstance | undefined) => {
       if (!formEl) return;
       formEl.user = id; // Добавляем айди пользователя
       const selectedDoctor = formLabelAlign.doctor.length > 0 ? formLabelAlign.doctor[formLabelAlign.doctor.length - 1] : null;
       formLabelAlign.doctor = selectedDoctor;
       console.log(formLabelAlign);
-          try {
-            const response = await axios.post('http://localhost:3001/appoint', formLabelAlign);
-            console.log('Form submitted successfully!');
-            console.log('Response:', response.data);
-            window.location.reload();
-          } catch (error) {
-            console.error('Error submitting form:', error);
-          }
+      try {
+        const response = await axios.post('http://localhost:3001/appoint', formLabelAlign);
+        console.log('Form submitted successfully!');
+        console.log('Response:', response.data);
+        window.location.reload();
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
 
     };
 
@@ -122,13 +133,31 @@ export default {
       return dataFromBase.value.some((item) => item === formattedDate);
     }
 
-      const disabledDate = (time) => {
-        // Проверяем, есть ли текущая дата в массиве dataFromBase
-        const formattedDate = dayjs(time).utc().format('YYYY-MM-DD');
-        return dataFromBase.value.some((item) => item === formattedDate);
-      };
+    const disabledDate = (time) => {
+      // Проверяем, есть ли текущая дата в массиве dataFromBase
+      const formattedDate = dayjs(time).utc().format('YYYY-MM-DD');
+      return dataFromBase.value.some((item) => item === formattedDate);
+    };
 
+    const getPet = () => {
+      axios.post('http://localhost:3001/pet', { id: id})
+          .then(response => {
+            // Обработка успешного ответа
 
+            const pets=response.data;
+            console.log(pets);
+            petData.value = pets.map((pet) => ({
+              value: pet.id,
+              label: pet.name,
+            }));
+            console.log( petData);
+          })
+          .catch(error => {
+            // Обработка ошибки
+            console.error(error);
+          });
+
+    }
 
     onMounted(async () => {
       try {
@@ -153,8 +182,7 @@ export default {
       } catch (error) {
         console.error(error);
       }
-
-
+      getPet();
 
     });
 
@@ -169,7 +197,8 @@ export default {
       dataFromBase,
       isHoliday,
       dayjs,
-      disabledDate ,
+      disabledDate,
+      petData,
     };
   },
 };
@@ -301,6 +330,7 @@ a.rowItem p {
 .cover-container.d-flex.w-100.h-100.p-3.mx-auto.flex-column {
   margin-top: 90px;
 }
+
 .demo-date-picker {
   display: flex;
   width: 100%;
@@ -325,13 +355,16 @@ a.rowItem p {
   font-size: 14px;
   margin-bottom: 20px;
 }
+
 button.el-button.el-button--primary {
   border: 1px white solid !important;
 }
+
 button.el-button.el-button--primary:hover {
   background-color: whitesmoke !important;
   color: black;
 }
+
 img.pess {
   position: absolute;
   height: 556px;
@@ -340,11 +373,13 @@ img.pess {
   top: -46px;
   right: 91px;
 }
+
 .cell {
   height: 30px;
   padding: 3px 0;
   box-sizing: border-box;
 }
+
 .cell .text {
   width: 24px;
   height: 24px;
@@ -356,10 +391,12 @@ img.pess {
   transform: translateX(-50%);
   border-radius: 50%;
 }
+
 .cell.current .text {
   background: #626aef;
   color: #fff;
 }
+
 .cell .holiday {
   position: absolute;
   width: 6px;

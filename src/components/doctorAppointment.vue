@@ -12,6 +12,7 @@
     <h1>Записи до вас:</h1>
     <div class="info" v-for="data in dataFromBase" :key="data.id">
       <p>{{ data.data }}</p>
+      <p>Тварина: {{getPet(data.id)}}</p>
       <p><strong>Причина звернення: </strong> {{ data.reason }}</p>
       <el-button type="primary" @click="deleteAppointment(data.id)">Видалити</el-button>
     </div>
@@ -58,13 +59,24 @@ export default {
         console.error(error);
       }
     }
+    const getPet = async (petId) => {
+      try {
+        const response = await axios.post("http://localhost:3001/pet", { id: petId });
+        const pet = response.data;
+        console.log(pet.name);
+        return pet.name;
+      } catch (error) {
+        console.error(error);
+      }
+    };
     onMounted(async () => {
       getAppointments();
     });
 
     return {
       dataFromBase,
-      deleteAppointment
+      deleteAppointment,
+      getPet,
     };
   }
 }

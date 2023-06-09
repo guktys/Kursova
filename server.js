@@ -88,13 +88,14 @@ app.post('/appoint', async (req, res) => {
         doctor,
         data,
         user,
+        pet
     } = req.body;
 
     let conn;
     try {
         conn = await pool.getConnection();
-        const query = "INSERT INTO `doctor's_appointments` (`id`, `doctor`, `user`, `reason`, `data`) VALUES (?, ?, ?, ?, ?)";
-        const values = ['', doctor, user, reason, data];
+        const query = "INSERT INTO `doctor's_appointments` (`id`, `doctor`, `user`, `reason`, `data`,`pet`) VALUES (?, ?, ?, ?, ?,?)";
+        const values = ['', doctor, user, reason, data,pet];
         const rows = await conn.query(query, values);
         if (rows.length > 0) {
             res.json({ message: 'Appointment created successfully' });

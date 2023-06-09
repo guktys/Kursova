@@ -42,21 +42,19 @@
     <div class="info">
       <div v-if="petData && petData.length > 0">
         <!-- Рендеринг данных о питомце -->
-        <h1>{{ petData[0].name }}</h1>
-        <p>Порода: {{ petData[0].type }}</p>
-        <p v-html="petData[0].card "></p>
-        <img :src="getImageUrl(petData[0].img)" />
-
-
-        <!-- Другие поля данных о питомце -->
+        <div v-for="pet in petData" :key="pet.id">
+          <h1>{{ pet.name }}</h1>
+          <p>Порода: {{ pet.type }}</p>
+          <p v-html="pet.card"></p>
+          <img class="petImg" :src="getImageUrl(pet.img)" />
+          <!-- Другие поля данных о питомце -->
+        </div>
       </div>
-
 
       <div v-else>
         <!-- Обработка загрузки данных -->
         <p>Loading pet data...</p>
       </div>
-
 
 
     </div>
@@ -286,5 +284,9 @@ a.rowItem p {
 }
 .info {
   width: 37%;
+}
+img.petImg {
+  /* height: 50%!important; */
+  width: 500px;
 }
 </style>
