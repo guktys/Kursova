@@ -40,11 +40,12 @@ app.post('/user', async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const query = "SELECT id FROM `users` WHERE `name` = ? AND `password` = ?";
+        const query = "SELECT * FROM `users` WHERE `name` = ? AND `password` = ?";
         const rows = await conn.query(query, [name, pass]);
 
         if (rows.length > 0) {
-            res.json({ message: 'Login successful', login: true, id: rows[0].id });
+            console.log('Login successful FOR ROLE ' + JSON.stringify(rows));
+            res.json({ message: 'Login successful', login: true, id: rows[0].id, role:rows[0].role });
         } else {
             res.json({ message: 'Login failed', login: false });
         }
@@ -64,6 +65,20 @@ app.get('/doctors', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({error: 'Failed to login'});
+    }
+});
+app.get('/getDoctors', async (req, res) => {
+    const { id } = req.query; // Используйте req.query для получения параметра id из строки запроса
+    const query = "SELECT * FROM doctor WHERE userId = ?";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(query, [id]); // Передайте параметр id в качестве аргумента
+        console.log('Doctor' + JSON.stringify(rows));
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get doctors' });
     }
 });
 
@@ -104,6 +119,36 @@ app.get('/data_appoint', async (req, res) => {
         console.error(err);
 
         res.status(500).json({ error: 'Failed to fetch data' });
+    }
+});
+app.get('/doctor_appoint', async (req, res) => {
+    const { doctor } = req.query;
+    const query = "SELECT * FROM `doctor's_appointments` WHERE `doctor` = ?";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(query, [doctor]);
+
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({ error: 'Failed to fetch data' });
+    }
+});
+app.delete('/deleteAppoint', async (req, res) => {
+    const { id } = req.query;
+    const query = "DELETE FROM `doctor's_appointments` WHERE `id` = ?";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const result = await conn.query(query, [id]);
+
+        res.json({ message: 'Appointment deleted successfully', result: result.toString() });
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({ error: 'Failed to delete appointment' });
     }
 });
 app.get('/getDoctors', async (req, res) => {

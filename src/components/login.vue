@@ -95,7 +95,14 @@
                 // Обработка ответа от сервера
               if(response.data.login===true){
               //  store.commit('setAuthenticated', true);
-              router.push({ path: '/user_panel',query: { id: response.data.id } });
+              let userRole =response.data.role;
+              if(userRole === "user"){
+                router.push({ path: '/user_panel',query: { id: response.data.id } });
+
+              }else {
+                router.push({ path: '/doctorPanel',query: { id: response.data.id } });
+              }
+
               }
 
               })

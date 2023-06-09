@@ -8,6 +8,8 @@ import Appointments from "@/components/Appointments.vue";
 import UserCalendar from "@/components/UserCalendar.vue";
 import Resept from "@/components/Resept.vue";
 import Poslygu from "@/components/Poslygu.vue";
+import DoctorPanel from "@/components/doctorPanel.vue";
+import DoctorAppointment from "@/components/doctorAppointment.vue";
 const routes = [
     { path: '/', component: Home_page },
     { path: '/contact', component: Contact },
@@ -18,6 +20,8 @@ const routes = [
     { path: '/user_calendar', component:UserCalendar },
     { path: '/resepts', component:Resept  },
     { path: '/poslygu', component:Poslygu  },
+    { path: '/doctorPanel', component:DoctorPanel },
+    { path: '/doctorAppointment', component:DoctorAppointment},
 ];
 
 const router = createRouter({
