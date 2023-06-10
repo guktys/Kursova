@@ -9,107 +9,92 @@
   />
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-    <h1>Записи до вас:</h1>
-    <div class="info" v-for="data in dataFromBase" :key="data.id">
-      <p>{{ data.data }}</p>
-      <el-button type="primary" @click="goToPet(data.pet.id)"><span v-if="data.pet">{{ data.pet.name}}</span></el-button>
-      <p><strong>Причина звернення: </strong> {{ data.reason }}</p>
-      <el-button type="primary" @click="deleteAppointment(data.id)">Видалити</el-button>
+    <div class="info">
+      <div v-if="petData && petData.length > 0">
+        <!-- Рендеринг данных о питомце -->
+        <div v-for="pet in petData" :key="pet.id">
+          <h1>{{ pet.name }}</h1>
+          <p>Порода: {{ pet.type }}</p>
+          <p v-html="pet.card"></p>
+          <img class="petImg" :src="getImageUrl(pet.img)" />
+          <!-- Другие поля данных о питомце -->
+        </div>
+      </div>
+
+      <div v-else>
+        <!-- Обработка загрузки данных -->
+        <p>Loading pet data...</p>
+      </div>
+      <h1>Виписані рецепти:</h1>
+      <div class="resept" v-if="resepts && resepts.length > 0">
+      <div v-for="resept in resepts" :key="resept.id">
+        <p>{{resept.data}}</p>
+        <p>{{resept.text}}</p>
+      </div>
+      </div>
+
     </div>
+
+
   </div>
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import {
+  Document,
+  Menu as IconMenu,
+  Location,
+  Setting,
+} from '@element-plus/icons-vue'
 import {createRouter, createWebHistory, useRoute, useRouter} from 'vue-router';
-import axios from 'axios';
-import { ElMessage } from 'element-plus'
+import {ref} from 'vue';
+import axios from "axios";
 export default {
-  setup() {
-    const dataFromBase = ref([]);
-    const route = useRoute();
-    const id = route.query.id;
-
-    const OkDelete = (ms) => {
-      ElMessage({
-        message: ms,
-        type: 'success',
-      })
-    }
-    const deleteAppointment = async (idAppointment) => {
-      console.log(idAppointment);
-      try {
-        const response = await axios.delete('http://localhost:3001/deleteAppoint', {params: {id: idAppointment}});
-        OkDelete(response.data.message);
-        console.log(response.data);
-        getAppointments();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    const getAppointments =async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/doctor_appoint', {
-          params: {
-            doctor: id
-          }
-        });
-        console.log(response.data);
-        dataFromBase.value = response.data;
-        await fetchPetData();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    const fetchPetData = async () => {
-      const promises = dataFromBase.value.map(async (data) => {
-        if (data.pet > 0) {
-          try {
-            const response = await axios.post("http://localhost:3001/getPet", { id: data.pet });
-            const pet = response.data[0];
-            console.log(pet.name);
-            return {
-              ...data,
-              pet: {
-                id: pet.id,
-                name: pet.name
-              }
-            };
-          } catch (error) {
-            console.error(error);
-            return {
-              ...data,
-              pet: "" // Возвращение значения по умолчанию
-            };
-          }
-        } else {
-          return {
-            ...data,
-            pet: "" // Возвращение значения по умолчанию
-          };
-        }
-      });
-
-      const updatedData = await Promise.all(promises);
-      dataFromBase.value = updatedData;
-    };
-    const router = useRouter();
-
-    const goToPet = (petId) => {
-      console.log(id);
-      router.push({ path: '/pet', query: { id: id,pet:petId } });
-    };
-
-    onMounted(async () => {
-      getAppointments();
-    });
-
+  data() {
     return {
-      dataFromBase,
-      deleteAppointment,
-      goToPet,
+      petData: null,
+      resepts:null
+      // Инициализируем свойство для хранения данных о питомцах
     };
-  }
+  },
+  mounted() {
+    const route = useRoute();
+    const pet = route.query.pet;
+
+    // Выполняем GET-запрос на сервер, передавая идентификатор
+    axios.post('http://localhost:3001/getPet', { id: pet})
+        .then(response => {
+          // Обработка успешного ответа
+          this.petData = response.data;
+          let parsedObject=JSON.parse( this.petData[0].card);
+          this.petData[0].card='Вік: '+parsedObject.age+'<br> Справка: '+parsedObject.illness;
+          console.log( this.petData);
+        })
+        .catch(error => {
+          // Обработка ошибки
+          console.error(error);
+        });
+
+    axios.post('http://localhost:3001/getResept', { id: pet})
+        .then(response => {
+          // Обработка успешного ответа
+      console.log(response.data);
+      this.resepts=response.data;
+        })
+        .catch(error => {
+          // Обработка ошибки
+          console.error(error);
+        });
+
+
+  },computed: {
+    getImageUrl (name) {
+      return (name) => {
+        const img = '' + name;
+        return new URL(`../assets/pet/${img}`, import.meta.url).href;
+      };
+    },
+  },
 }
 </script>
 
@@ -248,33 +233,38 @@ a.rowItem p {
   --bs-btn-hover-bg: #0086fe00;
 }
 
-.cover-container.d-flex.w-100.h-100.p-3.mx-auto.flex-column {
-  margin-top: 90px;
-}
+
 
 .el-col-12 {
   max-width: 17%;
   flex: 0 0 50%;
 }
-
 .info {
   text-align: left;
+  margin-left: 284px;
+  margin-top: -233px;
 }
-
 .info {
+  width: 60%;
+}
+img.petImg {
+  /* height: 50%!important; */
+  width: 500px;
+}
+.info {
+  overflow: auto;
+
+}
+.info {
+  position: absolute;
+  top: 260px;
+}
+.resept{
   border: 1px solid white;
   border-radius: 10px;
   padding: 10px;
   margin-top: 10px;
-}
-
-button.el-button.el-button--primary {
-  border: 1px white solid !important;
-}
-
-button.el-button.el-button--primary:hover {
-  background-color: whitesmoke !important;
-  color: black;
+  text-align: left;
 }
 
 </style>

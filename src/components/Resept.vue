@@ -12,7 +12,10 @@
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
 
     <h1>Виписаний вам рецепт:</h1>
-    <p class="List" v-if="petData && petData[0].resept" v-html="renderList(petData[0].resept)"></p>
+    <div class="info" v-for="data in petData" :key="data.id">
+      <h3>{{data.name}}</h3>
+      <p>{{data.resept.data}}</p>
+    </div>
   </div>
 </template>
 
@@ -23,50 +26,58 @@ import {
   Location,
   Setting,
 } from '@element-plus/icons-vue'
-import { createRouter, createWebHistory, useRoute, useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from "axios";
-
 
 export default {
   data() {
     return {
       petData: null,
-      // Инициализируем свойство для хранения данных о питомцах
     };
   },
   mounted() {
-    const route = useRoute();
-    const id = route.query.id;
-
-    // Выполняем GET-запрос на сервер, передавая идентификатор
-    axios.post('http://localhost:3001/pet', { id: id })
-        .then(response => {
-          // Обработка успешного ответа
-          this.petData = response.data;
-        })
-        .catch(error => {
-          // Обработка ошибки
-          console.error(error);
-        });
+    this.loadData();
   },
   methods: {
-    renderList(resept) {
-      let parsedObject = JSON.parse(resept);
-      let listItems = [];
+    async loadData() {
+      try {
+        const route = this.$router.currentRoute.value;
+        const id = route.query.id;
 
-      // Итерируем по свойствам объекта parsedObject
-      for (let key in parsedObject) {
-        let listItem = `<li>${parsedObject[key]}</li>`;
-        listItems.push(listItem);
+        const response = await axios.post('http://localhost:3001/pet', { id: id });
+        const petData = response.data;
+
+        this.petData = await Promise.all(petData.map(async (data) => {
+          if (data.pet > 0) {
+            try {
+              const response = await axios.post('http://localhost:3001/getResept', { id: data.id });
+              const resepts = response.data;
+              console.log(response.data);
+              return {
+                ...data,
+                resept: resepts
+              };
+            } catch (error) {
+              console.error(error);
+              return {
+                ...data,
+                resept: "" // Возвращение значения по умолчанию
+              };
+            }
+          } else {
+            return {
+              ...data,
+              resept: "" // Возвращение значения по умолчанию
+            };
+          }
+        }));
+      } catch (error) {
+        console.error(error);
       }
-
-      // Объединяем элементы списка в строку HTML
-      let listHTML = listItems.join('');
-      return `<ul>${listHTML}</ul>`;
+      console.log(this.petData);
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

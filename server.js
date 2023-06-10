@@ -9,7 +9,8 @@ const pool = mariadb.createPool({
     host: "127.0.0.1",
     user: "root",
     password: "",
-    database: "vuebase"
+    database: "vuebase",
+    connectionLimit: 20,
 });
 
 app.use(cors());
@@ -31,6 +32,10 @@ let conn;
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch pets' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 app.post('/getPet', async (req, res) => {
@@ -48,6 +53,31 @@ app.post('/getPet', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch pets' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
+    }
+});
+app.post('/getResept', async (req, res) => {
+    const { id } = req.body;
+    console.log(id);
+    const query = 'SELECT * FROM `resept` WHERE `pet` = '+id;
+    let conn;
+    try {
+
+        conn = await pool.getConnection();
+        console.log('Executing query:', query); // Вывод строки запроса
+        const result = await conn.query(query, );
+        res.json(result);
+        console.log(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch pets' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 
@@ -69,6 +99,10 @@ app.post('/user', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to login' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 // Роут для получения данных из базы данных
@@ -82,6 +116,10 @@ app.get('/doctors', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({error: 'Failed to login'});
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 app.get('/getDoctors', async (req, res) => {
@@ -96,6 +134,10 @@ app.get('/getDoctors', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to get doctors' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 
@@ -122,6 +164,10 @@ app.post('/appoint', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to login' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 app.get('/data_appoint', async (req, res) => {
@@ -137,6 +183,10 @@ app.get('/data_appoint', async (req, res) => {
         console.error(err);
 
         res.status(500).json({ error: 'Failed to fetch data' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 app.get('/doctor_appoint', async (req, res) => {
@@ -152,6 +202,10 @@ app.get('/doctor_appoint', async (req, res) => {
         console.error(err);
 
         res.status(500).json({ error: 'Failed to fetch data' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 app.delete('/deleteAppoint', async (req, res) => {
@@ -167,6 +221,10 @@ app.delete('/deleteAppoint', async (req, res) => {
         console.error(err);
 
         res.status(500).json({ error: 'Failed to delete appointment' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 app.get('/getDoctors', async (req, res) => {
@@ -182,6 +240,10 @@ app.get('/getDoctors', async (req, res) => {
         console.error(err);
 
         res.status(500).json({ error: 'Failed to fetch data' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
     }
 });
 
