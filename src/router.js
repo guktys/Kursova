@@ -10,7 +10,8 @@ import Resept from "@/components/Resept.vue";
 import Poslygu from "@/components/Poslygu.vue";
 import DoctorPanel from "@/components/doctorPanel.vue";
 import DoctorAppointment from "@/components/doctorAppointment.vue";
-import Pet from "@/components/Pet.vue"
+import Pet from "@/components/Pet.vue";
+import AddResept from "@/components/AddResept.vue";
 const routes = [
     { path: '/', component: Home_page },
     { path: '/contact', component: Contact },
@@ -24,6 +25,7 @@ const routes = [
     { path: '/doctorPanel', component:DoctorPanel },
     { path: '/doctorAppointment', component:DoctorAppointment},
     { path: '/pet', component:Pet},
+    { path: '/addResept', component:AddResept},
 ];
 
 const router = createRouter({

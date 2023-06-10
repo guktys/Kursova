@@ -1,5 +1,5 @@
 <template>
-  <meta name="theme-color" content="#712cf9">
+  <meta name="theme-color" content="#712cf9" />
   <!-- Favicons -->
   <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
@@ -7,121 +7,96 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
   />
-
-
-  <br>
+  <br />
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <el-form
+        :label-position="labelPosition"
+        label-width="100px"
+        :model="formLabelAlign"
+        style="max-width: 460px"
+    >
+      <h1 style="text-align: left">Створити рецепт:</h1>
+      <el-form-item label="Впишіть id тварини:">
+        <el-input type="input" v-model="formLabelAlign.pet" />
+      </el-form-item>
+      <el-form-item label="Рецепт: ">
+        <el-input type="textarea" v-model="formLabelAlign.resept" />
+      </el-form-item>
 
-    <el-calendar v-model="selectedDate" :value-format="dateFormat"  @click="handleDateChange">
-      <template #date-cell="{ data }">
-        <span v-if="isHoliday(data)" class="holiday"></span>
-        <p :class="data.isSelected ? 'is-selected' : ''">
-          {{ data.day.split('-').slice(1).join('-') }}
-          {{ data.isSelected ? '✔️' : '' }}
-        </p>
-
-      </template>
-    </el-calendar>
-
-    <h3>Обрана дата: {{ selectedDate }}</h3>
-    <p v-html="info"></p>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm(formLabelAlign)">Записатися</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script>
-import { ElCalendar } from 'element-plus';
-import axios from "axios";
-import {ref, onMounted} from 'vue';
-import {useRoute} from 'vue-router';
-import dayjs from 'dayjs'
-import utcPlugin from 'dayjs/plugin/utc';
+import { ref } from 'vue';
+import {ElButton, ElInput, ElForm, ElFormItem, ElMessage} from 'element-plus';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import { reactive } from 'vue';
 
-dayjs.extend(utcPlugin);
 export default {
-  name: 'UserCalendar',
   components: {
-    ElCalendar,
+    ElButton,
+    ElInput,
+    ElForm,
+    ElFormItem,
   },
   setup() {
+    const formLabelAlign = reactive({
+      resept: '',
+      pet: 0,
+    });
+    const labelPosition = ref('top');
     const route = useRoute();
     const id = route.query.id;
-    const value = ref(new Date());
-    const dataFromBase = ref([]);
-    const selectedDate = ref(null);
-    const info = ref('');
-const days  = ref([]);
-    const dateFormat = (date) => {
-      return dayjs(date).format('YYYY-MM-DD');
+    const petData = ref([]);
+    const value = ref([]);
+    const props = {
+      expandTrigger: 'hover',
     };
-    const getOneDohter = async (dohterId) => {
-      try {
-        const response = await axios.get('http://localhost:3001/getOneDoctors',
-            {
-              params: {
-                id: dohterId
-              }
-            });
 
-          return response.data[0].name; // Выводит значение из промиса
-
-      } catch (error) {
-        console.error(error);
-      }
-
+    const handleChange = (value) => {
+      console.log(value);
+    };
+    const OkDelete = (ms) => {
+      ElMessage({
+        message: ms,
+        type: 'success',
+      })
     }
-    const handleDateChange = async () => {// Преобразуем выбранную дату в нужный формат и сохраняем в selectedDate
-console.log("handleDateChange");
-      if (selectedDate.value !== null) {
-        // Если выбранная дата не равна null
-        info.value = ''; // Сбрасываем значение info
-        for (const item of dataFromBase.value) {
-          if (dateFormat(item.data) === dateFormat(selectedDate.value)) {
-            const doctorName = await getOneDohter(item.doctor);
-            info.value += "Лікар: " + doctorName;
-            info.value += '<br>' + "Причина звернення: " + item.reason + '<br>';
-            console.log(info.value);
-          }
-        }
-      } else {
-        info.value = ''; // Если выбранная дата равна null, очищаем info
-      }
-    };
-
-    const isHoliday = (date) => {
-      const formattedDate = dayjs(date.day).utc().format('YYYY-MM-DD');
-      return days.value.includes(formattedDate);
-    };
-
-    onMounted(async () => {
-
-
-      
+    const submitForm = async (formData) => {
+      // Обработка отправки формы
+      console.log(formData);
       try {
-        const response = await axios.get('http://localhost:3001/data_appoint', {
-          params: {
-            user: id
-          }
-        });
-
-        dataFromBase.value = response.data;
-        days.value = response.data.map((item) => item.data.split('T')[0]);
+        const response = await axios.post('http://localhost:3001/addResept', {text: formData.resept, pet: formData.pet});
+        console.log('Response:', response.data);
+        OkDelete(response.data.message);
       } catch (error) {
-        console.error(error);
+        console.error('Error submitting form:', error);
       }
 
-    });
-    return {
-      value,
-      selectedDate,
-      handleDateChange,
-      info,
-      dateFormat,
-      isHoliday,
+    };
 
+
+
+    return {
+      petData,
+      value,
+      props,
+      handleChange,
+      formLabelAlign,
+      labelPosition,
+      route,
+      id,
+      submitForm,
     };
   },
 };
 </script>
+
 
 <style scoped>
 .bd-placeholder-img {
@@ -249,6 +224,7 @@ a.rowItem p {
 .cover-container.d-flex.w-100.h-100.p-3.mx-auto.flex-column {
   margin-top: 90px;
 }
+
 .demo-date-picker {
   display: flex;
   width: 100%;
@@ -273,29 +249,13 @@ a.rowItem p {
   font-size: 14px;
   margin-bottom: 20px;
 }
+
 button.el-button.el-button--primary {
   border: 1px white solid !important;
 }
+
 button.el-button.el-button--primary:hover {
   background-color: whitesmoke !important;
   color: black;
 }
-.el-calendar-day {
-  color: black;
-}
- .holiday {
-   position: absolute;
-   width: 10px;
-   height: 10px;
-   background: var(--el-color-danger);
-   border-radius: 50%;
-   bottom: 0px;
-   left: 50%;
-   transform: translateX(-50%);
-   top: 48px;
-}
-.formatted-text {
-  white-space: pre-line;
-}
 </style>
-<style src="../assets/Appointments.css"></style>

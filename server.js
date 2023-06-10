@@ -80,6 +80,25 @@ app.post('/getResept', async (req, res) => {
         }
     }
 });
+app.post('/addResept', async (req, res) => {
+    const { text, pet } = req.body;
+
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const query = "INSERT INTO `resept` (`id`, `data`, `text`, `pet`) VALUES (?, NOW(), ?, ?)";
+        const values = ['', text, pet];
+        await conn.query(query, values);
+        res.json({ message: 'Resept created successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to create resept' });
+    } finally {
+        if (conn) {
+            conn.release();
+        }
+    }
+});
 
 app.post('/user', async (req, res) => {
     const { name, pass } = req.body;
@@ -140,7 +159,24 @@ app.get('/getDoctors', async (req, res) => {
         }
     }
 });
-
+app.get('/getOneDoctors', async (req, res) => {
+    const { id } = req.query; // Используйте req.query для получения параметра id из строки запроса
+    const query = "SELECT * FROM doctor WHERE id = ?";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const rows = await conn.query(query, [id]); // Передайте параметр id в качестве аргумента
+        console.log('Doctor' + JSON.stringify(rows));
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get doctors' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
+    }
+});
 app.post('/appoint', async (req, res) => {
     const {
         reason,

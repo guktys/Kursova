@@ -25,7 +25,7 @@
               <span>Записи до лікаря</span>
             </template>
             <el-menu-item-group title="">
-              <el-menu-item index="1-1" @click="goToAppointments">Записатися</el-menu-item>
+              <el-menu-item index="1-1" @click="goToAddResept">Виписати рецепт</el-menu-item>
               <el-menu-item index="1-2" @click="goToDoctorAppointment">Ваші записи</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
@@ -107,10 +107,10 @@ export default {
       };
     },
   },methods: {
-    goToAppointments() {
+    goToAddResept() {
       const id = this.$route.query.id;
       console.log(id);
-      this.$router.push({ path: '/appointments', query: { id: id } });
+      this.$router.push({ path: '/addResept', query: { id: id } });
 
     },
     goToDoctorAppointment() {

@@ -10,6 +10,7 @@
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <h1>Записи до вас:</h1>
+    <el-button type="primary" @click="">Сьогодні</el-button>
     <div class="info" v-for="data in dataFromBase" :key="data.id">
       <p>{{ data.data }}</p>
       <el-button type="primary" @click="goToPet(data.pet.id)"><span v-if="data.pet">{{ data.pet.name}}</span></el-button>

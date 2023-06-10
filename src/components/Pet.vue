@@ -14,6 +14,7 @@
         <!-- Рендеринг данных о питомце -->
         <div v-for="pet in petData" :key="pet.id">
           <h1>{{ pet.name }}</h1>
+          <p><strong>Id: {{ pet.id }}</strong></p>
           <p>Порода: {{ pet.type }}</p>
           <p v-html="pet.card"></p>
           <img class="petImg" :src="getImageUrl(pet.img)" />
@@ -25,16 +26,28 @@
         <!-- Обработка загрузки данных -->
         <p>Loading pet data...</p>
       </div>
+      <el-button class="addResept" type="primary" @click="dialogFormVisible = true">Виписати рецепт</el-button>
       <h1>Виписані рецепти:</h1>
       <div class="resept" v-if="resepts && resepts.length > 0">
-      <div v-for="resept in resepts" :key="resept.id">
+      <div class="reseptItem" v-for="resept in resepts" :key="resept.id">
         <p>{{resept.data}}</p>
         <p>{{resept.text}}</p>
       </div>
       </div>
-
     </div>
-
+    <el-dialog v-model="dialogFormVisible" title="Виписати рецепт">
+      <el-form :model="form">
+        <el-form-item label="Рецепт" :label-width="formLabelWidth">
+          <el-input type="textarea" v-model="form.text" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button class="ok" type="primary" @click="handleRecipeForm">Виписати</el-button>
+        <el-button @click="dialogFormVisible = false">Відмінити</el-button>
+      </span>
+      </template>
+    </el-dialog>
 
   </div>
 </template>
@@ -44,23 +57,44 @@ import {
   Document,
   Menu as IconMenu,
   Location,
-  Setting,
+  Setting
 } from '@element-plus/icons-vue'
+import {ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElButton, ElMessage} from 'element-plus';
+
 import {createRouter, createWebHistory, useRoute, useRouter} from 'vue-router';
-import {ref} from 'vue';
 import axios from "axios";
+import { reactive, ref } from 'vue'
+
+const dialogTableVisible = ref(false)
+const dialogFormVisible = ref(false)
+const formLabelWidth = '140px'
 export default {
+  components: {
+    ElDialog,
+    ElForm,
+    ElFormItem,
+    ElInput,
+    ElSelect,
+    ElOption,
+    ElButton,
+  },
   data() {
     return {
       petData: null,
-      resepts:null
+      resepts:null,
+      dialogFormVisible: false,
+      form: {
+        text: '',
+      },
+      formLabelWidth: '140px',
+      petId:0,
       // Инициализируем свойство для хранения данных о питомцах
     };
   },
   mounted() {
     const route = useRoute();
     const pet = route.query.pet;
-
+    this.petId=pet;
     // Выполняем GET-запрос на сервер, передавая идентификатор
     axios.post('http://localhost:3001/getPet', { id: pet})
         .then(response => {
@@ -75,19 +109,53 @@ export default {
           console.error(error);
         });
 
-    axios.post('http://localhost:3001/getResept', { id: pet})
-        .then(response => {
-          // Обработка успешного ответа
-      console.log(response.data);
-      this.resepts=response.data;
-        })
-        .catch(error => {
-          // Обработка ошибки
-          console.error(error);
-        });
+    this.getResept();
 
 
-  },computed: {
+  }, methods: {
+     OkDelete (ms)  {
+      ElMessage({
+        message: ms,
+        type: 'success',
+      })
+    },
+    async handleRecipeForm() {
+      // Обработчик события нажатия кнопки "Виписати"
+      // Получите данные из формы и выполните необходимые операции
+      const recipeData = {
+        text: this.form.text,
+      };
+      try {
+        const response = await axios.post('http://localhost:3001/addResept', {text: recipeData.text, pet: this.petId});
+         console.log('Response:', response.data);
+        this.OkDelete(response.data.message);
+        this.getResept();
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
+      // Выполните нужные действия с данными, например, сохраните в переменную или отправьте на сервер
+      console.log(recipeData);
+      this.form.text = '';
+      this.dialogFormVisible = false;
+    },
+    getResept() {
+      axios.post('http://localhost:3001/getResept', { id:  this.petId})
+          .then(response => {
+            // Обработка успешного ответа
+            console.log(response.data);
+            this.resepts=response.data;
+          })
+          .catch(error => {
+            // Обработка ошибки
+            console.error(error);
+          });
+    }
+  },
+
+
+
+
+  computed: {
     getImageUrl (name) {
       return (name) => {
         const img = '' + name;
@@ -259,12 +327,38 @@ img.petImg {
   position: absolute;
   top: 260px;
 }
-.resept{
+.reseptItem{
   border: 1px solid white;
   border-radius: 10px;
   padding: 10px;
   margin-top: 10px;
   text-align: left;
 }
+button.el-button.el-button--primary {
+  border: 1px white solid !important;
+}
 
+button.el-button.el-button--primary:hover {
+  background-color: whitesmoke !important;
+  color: black;
+}
+.addResept {
+  margin-top: 10px;
+  padding: 23px;
+}
+.el-button--text {
+  margin-right: 15px;
+}
+.el-select {
+  width: 300px;
+}
+.el-input {
+  width: 300px;
+}
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
+button.el-button.el-button--primary.ok {
+  color: black;
+}
 </style>
