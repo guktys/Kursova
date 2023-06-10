@@ -10,49 +10,48 @@
 
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-
     <h1>Виписаний вам рецепт:</h1>
-    <div class="info" v-for="data in petData" :key="data.id">
-      <h3>{{data.name}}</h3>
-      <p>{{data.resept.data}}</p>
-    </div>
+    <div class="info" v-for="data in petData" :key="data.id" style="display: flex; flex-direction: column; align-items: center;">
+      <h3 class="text-center">{{data.name}}</h3>
+<br>
+      <div class="resept" v-for="resept in data.resept" :key="resept.id" >
+        <div class="text-center">
+        <p>{{resept.data}}</p>
+        <p>{{resept.text}}</p>
+        </div>
+      </div>
+      </div>
+
   </div>
 </template>
 
 <script>
-import {
-  Document,
-  Menu as IconMenu,
-  Location,
-  Setting,
-} from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue';
 import axios from "axios";
+import { useRouter } from 'vue-router';
 
 export default {
-  data() {
-    return {
-      petData: null,
-    };
-  },
-  mounted() {
-    this.loadData();
-  },
-  methods: {
-    async loadData() {
+  setup() {
+    const router = useRouter();
+    const petData = ref(null);
+
+    onMounted(() => {
+      loadData();
+    });
+
+    async function loadData() {
       try {
-        const route = this.$router.currentRoute.value;
+        const route = router.currentRoute.value;
         const id = route.query.id;
 
-        const response = await axios.post('http://localhost:3001/pet', { id: id });
-        const petData = response.data;
+        const response1 = await axios.post('http://localhost:3001/pet', { id: id });
+        const petDataResponse = response1.data;
 
-        this.petData = await Promise.all(petData.map(async (data) => {
-          if (data.pet > 0) {
+        petData.value = await Promise.all(petDataResponse.map(async (data) => {
             try {
               const response = await axios.post('http://localhost:3001/getResept', { id: data.id });
               const resepts = response.data;
-              console.log(response.data);
+              console.log(resepts);
               return {
                 ...data,
                 resept: resepts
@@ -61,21 +60,20 @@ export default {
               console.error(error);
               return {
                 ...data,
-                resept: "" // Возвращение значения по умолчанию
+                resept: "Ошибка" // Возвращение значения по умолчанию
               };
             }
-          } else {
-            return {
-              ...data,
-              resept: "" // Возвращение значения по умолчанию
-            };
-          }
+
         }));
       } catch (error) {
         console.error(error);
       }
-      console.log(this.petData);
-    },
+      console.log(petData.value);
+    }
+
+    return {
+      petData
+    };
   },
 };
 </script>
@@ -183,5 +181,12 @@ button.el-button.el-button--primary:hover {
   background-color: whitesmoke !important;
   color: black;
 }
-
+.resept{
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: left;
+  width:60%;
+}
 </style>
