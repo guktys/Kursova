@@ -12,7 +12,7 @@
     <h1>Записи до вас:</h1>
     <div class="info" v-for="data in dataFromBase" :key="data.id">
       <p>{{ data.data }}</p>
-      <p>Тварина: {{getPet(data.id)}}</p>
+      <p>Тварина: <span v-if="data.pet">{{ data.pet}}</span></p>
       <p><strong>Причина звернення: </strong> {{ data.reason }}</p>
       <el-button type="primary" @click="deleteAppointment(data.id)">Видалити</el-button>
     </div>
@@ -29,6 +29,7 @@ export default {
     const dataFromBase = ref([]);
     const route = useRoute();
     const id = route.query.id;
+    const petData = ref({});
     const OkDelete = (ms) => {
       ElMessage({
         message: ms,
@@ -55,20 +56,55 @@ export default {
         });
         console.log(response.data);
         dataFromBase.value = response.data;
+        await fetchPetData();
       } catch (error) {
         console.error(error);
       }
     }
-    const getPet = async (petId) => {
-      try {
-        const response = await axios.post("http://localhost:3001/pet", { id: petId });
-        const pet = response.data;
-        console.log(pet.name);
-        return pet.name;
-      } catch (error) {
-        console.error(error);
-      }
+    const fetchPetData = async () => {
+      const promises = dataFromBase.value.map(async (data) => {
+        if (data.pet > 0) {
+          try {
+            const response = await axios.post("http://localhost:3001/getPet", { id: data.pet });
+            const pet = response.data[0];
+            console.log(pet.name);
+            return {
+              ...data,
+              pet: pet.name
+            };
+          } catch (error) {
+            console.error(error);
+            return {
+              ...data,
+              pet: "" // Возвращение значения по умолчанию
+            };
+          }
+        } else {
+          return {
+            ...data,
+            pet: "" // Возвращение значения по умолчанию
+          };
+        }
+      });
+
+      const updatedData = await Promise.all(promises);
+      dataFromBase.value = updatedData;
     };
+    const getPet = async (petId) => {
+      if (petId > 0) {
+        try {
+          const response = await axios.post("http://localhost:3001/getPet", { id: petId });
+          const pet = response.data[0];
+          console.log(pet.name);
+          return pet.name;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      return ""; // Возвращение значения по умолчанию
+    };
+
+
     onMounted(async () => {
       getAppointments();
     });
@@ -76,7 +112,6 @@ export default {
     return {
       dataFromBase,
       deleteAppointment,
-      getPet,
     };
   }
 }

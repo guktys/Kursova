@@ -33,6 +33,23 @@ let conn;
         res.status(500).json({ error: 'Failed to fetch pets' });
     }
 });
+app.post('/getPet', async (req, res) => {
+    const { id } = req.body;
+    console.log(id);
+    const query = 'SELECT * FROM `pets` WHERE `id` = '+id;
+    let conn;
+    try {
+
+        conn = await pool.getConnection();
+        console.log('Executing query:', query); // Вывод строки запроса
+        const result = await conn.query(query, );
+        res.json(result);
+        console.log(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch pets' });
+    }
+});
 
 app.post('/user', async (req, res) => {
     const { name, pass } = req.body;
