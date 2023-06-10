@@ -12,6 +12,7 @@ import DoctorPanel from "@/components/doctorPanel.vue";
 import DoctorAppointment from "@/components/doctorAppointment.vue";
 import Pet from "@/components/Pet.vue";
 import AddResept from "@/components/AddResept.vue";
+import SearchPet from "@/components/searchPet.vue";
 const routes = [
     { path: '/', component: Home_page },
     { path: '/contact', component: Contact },
@@ -26,6 +27,7 @@ const routes = [
     { path: '/doctorAppointment', component:DoctorAppointment},
     { path: '/pet', component:Pet},
     { path: '/addResept', component:AddResept},
+    { path: '/searchPet', component:SearchPet },
 ];
 
 const router = createRouter({

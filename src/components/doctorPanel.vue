@@ -29,13 +29,13 @@
               <el-menu-item index="1-2" @click="goToDoctorAppointment">Ваші записи</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
-          <el-menu-item index="4" @click="goToResept">
+          <el-menu-item index="4" @click="goToSearch">
             <el-icon>
               <el-icon>
-                <document/>
+                <Search style="width: 1em; height: 1em;" />
               </el-icon>
             </el-icon>
-            <span>Рецепти та препарати</span>
+            <span>Знайти тварину</span>
           </el-menu-item>
         </el-menu>
       </el-col>
@@ -110,7 +110,7 @@ export default {
     goToAddResept() {
       const id = this.$route.query.id;
       console.log(id);
-      this.$router.push({ path: '/addResept', query: { id: id } });
+      this.$router.push({ path: '/addResept', query: { id: this.dokId } });
 
     },
     goToDoctorAppointment() {
@@ -120,10 +120,10 @@ export default {
 
     },
 
-    goToResept(){
+    goToSearch(){
       const id = this.$route.query.id;
       console.log(id);
-      this.$router.push({ path: '/resepts', query: { id: id } });
+      this.$router.push({ path: '/searchPet', query: { id: this.dokId } });
 
     },
   },

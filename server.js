@@ -16,7 +16,24 @@ const pool = mariadb.createPool({
 app.use(cors());
 app.use(express.json());
 
+app.post('/getAllPet', async (req, res) => {
+    const query = 'SELECT * FROM `pets` ';
+    let conn;
+    try {
 
+        conn = await pool.getConnection();
+        const result = await conn.query(query);
+        res.json(result);
+        console.log(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch pets' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
+    }
+});
 app.post('/pet', async (req, res) => {
     console.log('i`m work!!!')
     const { id } = req.body;

@@ -10,10 +10,11 @@
   <br>
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <h1>Записи до вас:</h1>
-    <el-button type="primary" @click="">Сьогодні</el-button>
+    <el-button type="primary" @click="sortToday">Сьогодні</el-button>
     <div class="info" v-for="data in dataFromBase" :key="data.id">
       <p>{{ data.data }}</p>
-      <el-button type="primary" @click="goToPet(data.pet.id)"><span v-if="data.pet">{{ data.pet.name}}</span></el-button>
+      <el-button type="primary" @click="goToPet(data.pet.id)"><span v-if="data.pet">{{ data.pet.name }}</span>
+      </el-button>
       <p><strong>Причина звернення: </strong> {{ data.reason }}</p>
       <el-button type="primary" @click="deleteAppointment(data.id)">Видалити</el-button>
     </div>
@@ -24,7 +25,11 @@
 import {onMounted, ref} from "vue";
 import {createRouter, createWebHistory, useRoute, useRouter} from 'vue-router';
 import axios from 'axios';
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus';
+import dayjs from 'dayjs'
+import utcPlugin from 'dayjs/plugin/utc';
+
+dayjs.extend(utcPlugin);
 export default {
   setup() {
     const dataFromBase = ref([]);
@@ -48,7 +53,7 @@ export default {
         console.error(error);
       }
     }
-    const getAppointments =async () => {
+    const getAppointments = async () => {
       try {
         const response = await axios.get('http://localhost:3001/doctor_appoint', {
           params: {
@@ -66,9 +71,8 @@ export default {
       const promises = dataFromBase.value.map(async (data) => {
         if (data.pet > 0) {
           try {
-            const response = await axios.post("http://localhost:3001/getPet", { id: data.pet });
+            const response = await axios.post("http://localhost:3001/getPet", {id: data.pet});
             const pet = response.data[0];
-            console.log(pet.name);
             return {
               ...data,
               pet: {
@@ -95,12 +99,30 @@ export default {
       dataFromBase.value = updatedData;
     };
     const router = useRouter();
-
+const formDataTime = (time) =>{
+ return  dayjs(time).utc().format('YYYY-MM-DD');
+    }
     const goToPet = (petId) => {
       console.log(id);
-      router.push({ path: '/pet', query: { id: id,pet:petId } });
+      router.push({path: '/pet', query: {id: id, pet: petId}});
     };
-
+    const sortToday = () => {
+      const today = dayjs().format('YYYY-MM-DD');
+      console.log("Today " + today);
+      let newData = [];
+      for (const data of dataFromBase.value) {
+        const dataDate = dayjs(data.data).format('YYYY-MM-DD');
+        if (dataDate === today) {
+          newData.push(data);
+        }
+      }
+      // Очистка dataFromBase
+      dataFromBase.value.splice(0, dataFromBase.value.length);
+      newData.forEach((item) => {
+        dataFromBase.value.push(item);
+      });
+      console.log(newData);
+    }
     onMounted(async () => {
       getAppointments();
     });
@@ -109,6 +131,7 @@ export default {
       dataFromBase,
       deleteAppointment,
       goToPet,
+      sortToday,
     };
   }
 }
