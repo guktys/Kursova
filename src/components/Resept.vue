@@ -16,7 +16,7 @@
 <br>
       <div class="resept" v-for="resept in data.resept" :key="resept.id" >
         <div class="text-center">
-        <p>{{resept.data}}</p>
+        <p>{{formDataTime(resept.data)}}</p>
         <p>{{resept.text}}</p>
         </div>
       </div>
@@ -29,6 +29,7 @@
 import { ref, onMounted } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
+import dayjs from "dayjs";
 
 export default {
   setup() {
@@ -38,7 +39,9 @@ export default {
     onMounted(() => {
       loadData();
     });
-
+    const formDataTime = (time)=>{
+      return  dayjs(time).format('YYYY-MM-DD');
+    };
     async function loadData() {
       try {
         const route = router.currentRoute.value;
@@ -72,7 +75,8 @@ export default {
     }
 
     return {
-      petData
+      petData,
+      formDataTime,
     };
   },
 };

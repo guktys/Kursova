@@ -22,9 +22,11 @@
 
       </template>
     </el-calendar>
+<div v-if="selectedDate">
+  <h3>Обрана дата: {{ formDataTime(selectedDate) }}</h3>
+  <p v-html="info"></p>
+</div>
 
-    <h3>Обрана дата: {{ selectedDate }}</h3>
-    <p v-html="info"></p>
   </div>
 </template>
 
@@ -86,7 +88,9 @@ console.log("handleDateChange");
         info.value = ''; // Если выбранная дата равна null, очищаем info
       }
     };
-
+    const formDataTime = (time)=>{
+      return  dayjs(time).format('YYYY-MM-DD');
+    };
     const isHoliday = (date) => {
       const formattedDate = dayjs(date.day).utc().format('YYYY-MM-DD');
       return days.value.includes(formattedDate);
@@ -117,6 +121,7 @@ console.log("handleDateChange");
       info,
       dateFormat,
       isHoliday,
+      formDataTime,
 
     };
   },

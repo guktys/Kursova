@@ -12,8 +12,7 @@
       <el-input v-model="searchQuery" placeholder="Знайти тварину"></el-input>
       <el-button type="primary" @click="filterPets">Пошук</el-button>
     </div>
-    <div v-for="pet in filteredPets" :key="pet.id" style="margin-top: 15px">
-      <!-- Отображение данных питомца -->
+    <div class="searchResult" v-for="pet in filteredPets" :key="pet.id" style="margin-top: 15px">
       <el-button type="primary" @click="goToPet(pet.id)"><span >{{ pet.name }}</span></el-button>
     </div>
   </div>
@@ -88,5 +87,12 @@ button.el-button.el-button--primary {
 button.el-button.el-button--primary:hover {
   background-color: whitesmoke !important;
   color: black;
+}
+.searchResult {
+  justify-content: left;
+  display: flex;
+}
+.search-bar {
+  margin-top: 50px;
 }
 </style>

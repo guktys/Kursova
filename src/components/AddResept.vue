@@ -36,6 +36,7 @@ import {ElButton, ElInput, ElForm, ElFormItem, ElMessage} from 'element-plus';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { reactive } from 'vue';
+import dayjs from "dayjs";
 
 export default {
   components: {
@@ -70,8 +71,9 @@ export default {
     const submitForm = async (formData) => {
       // Обработка отправки формы
       console.log(formData);
+      let today = dayjs().format('YYYY-MM-DD');
       try {
-        const response = await axios.post('http://localhost:3001/addResept', {text: formData.resept, pet: formData.pet});
+        const response = await axios.post('http://localhost:3001/addResept', {text: formData.resept, pet: formData.pet, time:today });
         console.log('Response:', response.data);
         OkDelete(response.data.message);
       } catch (error) {

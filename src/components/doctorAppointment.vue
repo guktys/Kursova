@@ -12,7 +12,7 @@
     <h1>Записи до вас:</h1>
     <el-button type="primary" @click="sortToday">Сьогодні</el-button>
     <div class="info" v-for="data in dataFromBase" :key="data.id">
-      <p>{{ data.data }}</p>
+      <p>{{ formDataTime(data.data) }}</p>
       <el-button type="primary" @click="goToPet(data.pet.id)"><span v-if="data.pet">{{ data.pet.name }}</span>
       </el-button>
       <p><strong>Причина звернення: </strong> {{ data.reason }}</p>
@@ -100,7 +100,7 @@ export default {
     };
     const router = useRouter();
 const formDataTime = (time) =>{
- return  dayjs(time).utc().format('YYYY-MM-DD');
+ return  dayjs(time).format('YYYY-MM-DD');
     }
     const goToPet = (petId) => {
       console.log(id);
@@ -132,6 +132,7 @@ const formDataTime = (time) =>{
       deleteAppointment,
       goToPet,
       sortToday,
+      formDataTime,
     };
   }
 }

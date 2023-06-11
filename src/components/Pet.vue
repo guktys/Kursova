@@ -30,7 +30,7 @@
       <h1>Виписані рецепти:</h1>
       <div class="resept" v-if="resepts && resepts.length > 0">
       <div class="reseptItem" v-for="resept in resepts" :key="resept.id">
-        <p>{{resept.data}}</p>
+        <p>{{formDataTime(resept.data)}}</p>
         <p>{{resept.text}}</p>
       </div>
       </div>
@@ -64,6 +64,7 @@ import {ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElButton, ElM
 import {createRouter, createWebHistory, useRoute, useRouter} from 'vue-router';
 import axios from "axios";
 import { reactive, ref } from 'vue'
+import dayjs from "dayjs";
 
 const dialogTableVisible = ref(false)
 const dialogFormVisible = ref(false)
@@ -113,6 +114,9 @@ export default {
 
 
   }, methods: {
+    formDataTime (time){
+      return  dayjs(time).format('YYYY-MM-DD');
+    },
      OkDelete (ms)  {
       ElMessage({
         message: ms,
@@ -125,8 +129,9 @@ export default {
       const recipeData = {
         text: this.form.text,
       };
+      let today = dayjs().format('YYYY-MM-DD');
       try {
-        const response = await axios.post('http://localhost:3001/addResept', {text: recipeData.text, pet: this.petId});
+        const response = await axios.post('http://localhost:3001/addResept', {text: recipeData.text, pet: this.petId, time: today});
          console.log('Response:', response.data);
         this.OkDelete(response.data.message);
         this.getResept();

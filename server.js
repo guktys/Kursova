@@ -98,13 +98,13 @@ app.post('/getResept', async (req, res) => {
     }
 });
 app.post('/addResept', async (req, res) => {
-    const { text, pet } = req.body;
+    const { text, pet, time } = req.body;
 
     let conn;
     try {
         conn = await pool.getConnection();
-        const query = "INSERT INTO `resept` (`id`, `data`, `text`, `pet`) VALUES (?, NOW(), ?, ?)";
-        const values = ['', text, pet];
+        const query = "INSERT INTO `resept` (`id`, `data`, `text`, `pet`) VALUES (?, ?, ?, ?)";
+        const values = ['',time, text, pet];
         await conn.query(query, values);
         res.json({ message: 'Resept created successfully' });
     } catch (err) {
