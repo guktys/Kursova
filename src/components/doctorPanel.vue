@@ -275,12 +275,12 @@ a.rowItem p {
 }
 
 .info {
-  text-align: left;
-  margin-left: 284px;
-  margin-top: -233px;
+  position: absolute;
+  left: 287px;
+  top: 3px;
 }
 
 .info {
-  width: 37%;
+  width: 50%;
 }
 </style>

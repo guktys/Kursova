@@ -352,14 +352,18 @@
         </a>
       </div>
     </div>
-    <div class="container col-xxl-8 px-4 py-5">
-      <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+    <div class="container col-xxl-8 px-4 ">
+      <div class="row flex-lg-row-reverse align-items-center ">
         <div class="col-10 col-sm-8 col-lg-6 align-items-stretch">
           <img src="../assets/derector.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" loading="lazy" width="700" height="500">
         </div>
         <div class="col-lg-6 align-items-stretch">
-          <h1 class="display-5  mb-3">Responsive left-aligned hero with image</h1>
-          <p>Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p>
+          <h1 class="display-5  mb-3">Гарантуємо якість послуг</h1>
+          <p>Директор клініки Яна Сергіївна Косуч гарантує якість виконаних послуг. Ми пильно слідкуємо за станом ваших улюбленців.</p>
+          <p>Виникли проблеми? Зателефонуйте нам:</p>
+          <a class="btn btn-outline-secondary" href="/contact">
+            <button class="callUs">Зателефонувати нам</button>
+          </a>
         </div>
       </div>
     </div>
