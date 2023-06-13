@@ -32,6 +32,8 @@
       <div class="reseptItem" v-for="resept in resepts" :key="resept.id">
         <p>{{formDataTime(resept.data)}}</p>
         <p>{{resept.text}}</p>
+        <el-button class="delete" @click="deleteResept(resept.id)">Видалити</el-button>
+
       </div>
       </div>
     </div>
@@ -154,6 +156,16 @@ export default {
             // Обработка ошибки
             console.error(error);
           });
+    },
+    async deleteResept  (id)  {
+      try {
+        const response = await axios.delete('http://localhost:3001/deleteResept', {params: {id: id}});
+        this.OkDelete(response.data.message);
+        console.log(response.data);
+        this.getResept();
+      } catch (error) {
+        console.error(error);
+      }
     }
   },
 
@@ -364,6 +376,15 @@ button.el-button.el-button--primary:hover {
   margin-right: 10px;
 }
 button.el-button.el-button--primary.ok {
+  color: black;
+}
+button.delete {
+  border: 1px white solid !important;
+  color:white;
+}
+
+button.delete:hover {
+  background-color: whitesmoke !important;
   color: black;
 }
 </style>

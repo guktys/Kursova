@@ -7,3 +7,6 @@ div#app {
     width: 100%;
 }
 
+body.d-flex.text-center.text-bg-dark {
+    width: 100%;
+}

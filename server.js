@@ -280,6 +280,25 @@ app.delete('/deleteAppoint', async (req, res) => {
         }
     }
 });
+app.delete('/deleteResept', async (req, res) => {
+    const { id } = req.query;
+    const query = "DELETE FROM `resept` WHERE `id` = ?";
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const result = await conn.query(query, [id]);
+
+        res.json({ message: 'Resept deleted successfully', result: result.toString() });
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({ error: 'Failed to delete  resept' });
+    }finally {
+        if (conn) {
+            conn.release(); // Верните соединение обратно в пул
+        }
+    }
+});
 app.get('/getDoctors', async (req, res) => {
     const { id } = req.query;
     const query = "SELECT * FROM `doctor` WHERE `id` = ?";

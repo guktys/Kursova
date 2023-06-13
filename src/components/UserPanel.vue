@@ -281,6 +281,7 @@ a.rowItem p {
   position: absolute;
   left: 287px;
   top: 3px;
+  text-align: left;
 }
 
 .info {
